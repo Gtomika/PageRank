@@ -29,14 +29,14 @@ public class EredmenyPanel extends JPanel{
 
 	private static final long serialVersionUID = 1L;
 	
-	public EredmenyPanel(Matrix googleMatrix,Matrix pageRank,double szamolasiIdo) {
+	public EredmenyPanel(Matrix googleMatrix,Matrix pageRank,double szamolasiIdo,int elvegzettIteraciok) {
 		
 		setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
 		
 		//számolási idõ kerekítése
 		szamolasiIdo = BigDecimal.valueOf(szamolasiIdo).setScale(3, RoundingMode.HALF_UP).doubleValue();
 		
-		JLabel label1 = new JLabel("A PageRank vektor: (számolási idõ kb. "+szamolasiIdo+" másodperc volt)");
+		JLabel label1 = new JLabel("<html><body>A PageRank vektor: <br>- A számolási idõ kb. "+szamolasiIdo+" másodperc volt <br>- Elvégzett iterációk száma: "+elvegzettIteraciok +"</body></html>");
 		label1.setFont(PageRankMain.APPFONT);
 		label1.setAlignmentX(Component.LEFT_ALIGNMENT);
 		add(label1);

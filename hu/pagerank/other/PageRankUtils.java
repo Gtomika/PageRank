@@ -19,6 +19,7 @@ public abstract class PageRankUtils {
 	public static Matrix linkMatrix;
 	public static Matrix sMatrix;
 	public static Matrix googleMatrix;
+	public static int elvegzettIteraciok = 0;
 	
 	/**
 	 * calculatePageRank
@@ -38,8 +39,32 @@ public abstract class PageRankUtils {
 		STARTINGMATRIX = new Matrix(startingData);
 		
 		Matrix pageRank = new Matrix(STARTINGMATRIX);
-		for(int i=0;i< PageRankMain.iterationNumber ;i++) {
-			pageRank = new Matrix( googleMatrix.times(pageRank) );
+		if(PageRankMain.usingIterationNumber) { //konkrét iterációs szám alapján
+			
+			for(int i=0;i< PageRankMain.iterationNumber ;i++) {
+				pageRank = new Matrix( googleMatrix.times(pageRank) );
+			}
+			elvegzettIteraciok = PageRankMain.iterationNumber;
+			
+		} else { //csökkenés alapján
+			elvegzettIteraciok = 0;
+			
+			boolean csokkenesNagyobb = true;
+			while(csokkenesNagyobb) {
+				elvegzettIteraciok++;
+				
+				Matrix pageRankElotte = new Matrix(pageRank); //korábbi pagerank elmentése
+				pageRank = new Matrix( googleMatrix.times(pageRank) ); //iteráció elvégzése
+				
+				csokkenesNagyobb = false;
+				for(int i=0;i<PageRankMain.size;i++) {
+					if( Math.abs( pageRankElotte.data[i][0] - pageRank.data[i][0] ) > PageRankMain.changeMargin  ) { //ha valahol nagyobb akkor tovább iterálás
+						csokkenesNagyobb = true;
+						break;
+					}
+				}
+			}
+			
 		}
 		
 		//kerekítés 2 számjegyre
@@ -78,8 +103,11 @@ public abstract class PageRankUtils {
 		//link mátrix feltöltése
 		for(int j=0;j<size;j++) {	
 			for(int i=0;i<size;i++) {
-			
-				if(linkTabla[i][j]==1) {
+				
+				if(numberOfLinksOnPage[j] == 0) { //dangling node kezelése
+					linkMatrixData[i][j] = 1.0/PageRankMain.size;
+					linkMatrixData[i][j] = BigDecimal.valueOf(linkMatrixData[i][j]).setScale(3, RoundingMode.HALF_UP).doubleValue();
+				} else if(linkTabla[i][j]==1) {
 					linkMatrixData[i][j] = 1.0/numberOfLinksOnPage[j];
 					linkMatrixData[i][j] = BigDecimal.valueOf(linkMatrixData[i][j]).setScale(3, RoundingMode.HALF_UP).doubleValue();
 				} else {
@@ -104,9 +132,9 @@ public abstract class PageRankUtils {
 		
 		
 		//localLinkMatrix = new Matrix(localLinkMatrix.transpose());
-		Matrix linkMatrixP = new Matrix( localLinkMatrix.multiplyAllValuesWith(1-ALPHA) );
+		Matrix linkMatrixP = new Matrix( localLinkMatrix.multiplyAllValuesWith(ALPHA) );
 		
-		Matrix sMatrixP = new Matrix ( localSMatrix.multiplyAllValuesWith(ALPHA) );
+		Matrix sMatrixP = new Matrix ( localSMatrix.multiplyAllValuesWith(1-ALPHA) );
 		
 		googleMatrix = new Matrix( linkMatrixP.plus(sMatrixP) );
 		

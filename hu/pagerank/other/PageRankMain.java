@@ -2,11 +2,15 @@ package hu.pagerank.other;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Random;
 
 import javax.swing.BoxLayout;
@@ -23,9 +27,11 @@ import hu.pagerank.gui.MatrixPanel;
 public class PageRankMain {
 	
 	public static int size = 10;
-	public static double linkPossibility;
+	public static double linkPossibility = 1.0/size;
 	public static double alpha = 0.85;
-	public static int iterationNumber = 5;
+	public static int iterationNumber = 10;
+	public static double changeMargin = 0.01;
+	public static boolean usingIterationNumber = true;
 	
 	public static final Font APPFONT = new Font("Arial",Font.PLAIN,20);
 	public static int logID;
@@ -72,7 +78,6 @@ public class PageRankMain {
 	
 	private void initialize() {
 		frame = new JFrame();
-		frame.setLocation(300, 300);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setTitle("PageRank számoló");
 		
@@ -80,12 +85,15 @@ public class PageRankMain {
 		frame.getContentPane().add(mainPanel);
 		
 		frame.pack();
+		
+		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+		frame.setLocation(dim.width/2-frame.getSize().width/2, dim.height/2-frame.getSize().height/2);
 	}
 	
 	public static JPanel createMainPanel() {
 		JPanel mainPanel = new JPanel(new BorderLayout());
 		
-		JLabel generalvaLabel = new JLabel("Google mátrix létrehozva: (1-α)*linkmátrix + α*S (α="+alpha+")");
+		JLabel generalvaLabel = new JLabel("Google mátrix létrehozva: α*linkmátrix + (1-α)*S (α="+alpha+")");
 		generalvaLabel.setFont(APPFONT);
 		
 		JPanel generalvaPanel = new JPanel(new FlowLayout(FlowLayout.CENTER,5,30));
@@ -177,12 +185,22 @@ public class PageRankMain {
 					
 					InputPanel.isUpdated = false;
 				}
-				JOptionPane.showMessageDialog(frame, new EredmenyPanel(PageRankUtils.googleMatrix,pageRank,(int)szamolasiIdo/1000.0), "A PageRank vektor", JOptionPane.PLAIN_MESSAGE);
+				JOptionPane.showMessageDialog(frame, new EredmenyPanel(PageRankUtils.googleMatrix,pageRank,(int)szamolasiIdo/1000.0,PageRankUtils.elvegzettIteraciok), "A PageRank vektor", JOptionPane.PLAIN_MESSAGE);
 			}
 		});
 		gombokSeged2.add(szamolasGomb);
 		
 		gombokPanel.add(gombokSeged2);
+		
+		JPanel memoriaPanel = new JPanel(new FlowLayout(FlowLayout.CENTER,10,30)); //memória foglalást mutató panel
+		
+		double foglaltMemoria = memoriaIgenySzamolasa();
+		JLabel memoriaLabel = new JLabel("Egy "+ size +"*"+ size +" mérető mátrix "+ foglaltMemoria + " mB helyet foglal.");
+		memoriaLabel.setFont(new Font("Arial",Font.BOLD,15));
+		
+		memoriaPanel.add(memoriaLabel);
+		
+		gombokPanel.add(memoriaPanel);
 		
 		mainPanel.add(gombokPanel,BorderLayout.PAGE_END);
 		
@@ -231,12 +249,33 @@ public class PageRankMain {
 				JOptionPane.showMessageDialog(frame, "Nem megfelelő alfa paraméter!", "Rossz input!", JOptionPane.ERROR_MESSAGE);
 				helytelenInput=true;
 			} catch(InvalidIterationNumberException exc) {
-				JOptionPane.showMessageDialog(frame, "Nem megfelelő iterációs szám!", "Rossz input!", JOptionPane.ERROR_MESSAGE);
-				helytelenInput=true;
+				if(usingIterationNumber) {
+					JOptionPane.showMessageDialog(frame, "Nem megfelelő iterációs szám!", "Rossz input!", JOptionPane.ERROR_MESSAGE);
+					helytelenInput=true;
+				} else {
+					iterationNumber = 10; //ha nem ez volt választva akkor hiba esetén csak alapértelmezettre áll
+				}
+			} catch(InvalidChangeException exc) {
+				if(!usingIterationNumber) {
+					JOptionPane.showMessageDialog(frame, "Nem megfelelő minimális változás!", "Rossz input!", JOptionPane.ERROR_MESSAGE);
+					helytelenInput=true;
+				} else {
+					changeMargin = 0.01;
+				}
 			}
 			
 			InputPanel.isUpdated = true;
 		} while(helytelenInput==true);
+	}
+	
+	private static double memoriaIgenySzamolasa() { //mátrix memória igényét számolja
+		
+		int elemekSzama = size*size;
+		
+		double foglalt =  (elemekSzama * Double.BYTES) / new Double(1024 * 1024);
+		
+		return BigDecimal.valueOf(foglalt).setScale(3, RoundingMode.HALF_UP).doubleValue();
+		
 	}
 	
 }
