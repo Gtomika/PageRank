@@ -36,7 +36,7 @@ public class EredmenyPanel extends JPanel{
 		//számolási idõ kerekítése
 		szamolasiIdo = BigDecimal.valueOf(szamolasiIdo).setScale(3, RoundingMode.HALF_UP).doubleValue();
 		
-		JLabel label1 = new JLabel("<html><body>A PageRank vektor: <br>- A számolási idõ kb. "+szamolasiIdo+" másodperc volt <br>- Elvégzett iterációk száma: "+elvegzettIteraciok +"</body></html>");
+		JLabel label1 = new JLabel("<html><body>- A számolási idõ kb. "+szamolasiIdo+" másodperc volt <br>- Elvégzett iterációk száma: "+elvegzettIteraciok +"<br> A PageRank vektor:</body></html>");
 		label1.setFont(PageRankMain.APPFONT);
 		label1.setAlignmentX(Component.LEFT_ALIGNMENT);
 		add(label1);
@@ -46,9 +46,9 @@ public class EredmenyPanel extends JPanel{
 		add(label2);
 		
 		if(PageRankMain.size<=PageRankMain.MAXDISPLAYSIZE) {
-			MatrixPanel m = new MatrixPanel(pageRank,false);
-			m.setAlignmentX(Component.LEFT_ALIGNMENT);
-			add(m);
+			PageRankPanel p = new PageRankPanel(pageRank.transpose());
+			p.setAlignmentX(Component.LEFT_ALIGNMENT);
+			add(p);
 		} else {
 			JLabel infoLabel = new JLabel("<html><body>Az eredményvektor túl nagy ahhoz hogy itt megjelenjen!<br> (de az output fájlba bekerül)</body></html>");
 			infoLabel.setFont(PageRankMain.APPFONT);

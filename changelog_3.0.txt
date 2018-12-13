@@ -1,0 +1,7 @@
+- alfa paraméterrel kapcsolatos hiba javítása
+- "dangling node" hiba javítása
+
+- új funkciók:
+	lehetséges az iteráció megállítása az eredményvektor változása alapján
+	kapott PageRank rendezése lehetséges (oldalak fontossága szerint)
+	a program mutatja, hogy mennyi memóriát foglal

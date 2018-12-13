@@ -91,6 +91,7 @@ public class PageRankMain {
 	}
 	
 	public static JPanel createMainPanel() {
+		System.gc();
 		JPanel mainPanel = new JPanel(new BorderLayout());
 		
 		JLabel generalvaLabel = new JLabel("Google mátrix létrehozva: α*linkmátrix + (1-α)*S (α="+alpha+")");
@@ -195,7 +196,7 @@ public class PageRankMain {
 		JPanel memoriaPanel = new JPanel(new FlowLayout(FlowLayout.CENTER,10,30)); //memória foglalást mutató panel
 		
 		double foglaltMemoria = memoriaIgenySzamolasa();
-		JLabel memoriaLabel = new JLabel("Egy "+ size +"*"+ size +" mérető mátrix "+ foglaltMemoria + " mB helyet foglal.");
+		JLabel memoriaLabel = new JLabel("A program jelenleg " + foglaltMemoria + " mB helyet foglal.");
 		memoriaLabel.setFont(new Font("Arial",Font.BOLD,15));
 		
 		memoriaPanel.add(memoriaLabel);
@@ -270,9 +271,10 @@ public class PageRankMain {
 	
 	private static double memoriaIgenySzamolasa() { //mátrix memória igényét számolja
 		
-		int elemekSzama = size*size;
+		long teljes = Runtime.getRuntime().totalMemory();
+		long szabad = Runtime.getRuntime().freeMemory();
 		
-		double foglalt =  (elemekSzama * Double.BYTES) / new Double(1024 * 1024);
+		double foglalt = (teljes - szabad) / new Double(1024 * 1024);
 		
 		return BigDecimal.valueOf(foglalt).setScale(3, RoundingMode.HALF_UP).doubleValue();
 		
