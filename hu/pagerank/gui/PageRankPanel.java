@@ -31,6 +31,8 @@ public class PageRankPanel extends JPanel {
 	private JPanel nrPageRankPanel;
 	private JPanel rPageRankPanel;
 	
+	private JButton valtoGomb;
+	
 	public PageRankPanel(Matrix pageRank) {
 		
 		if(pageRank.M != 1) throw new IllegalArgumentException();
@@ -49,7 +51,7 @@ public class PageRankPanel extends JPanel {
 		pageRankTarto.add(rPageRankPanel,RENDEZETT);
 		add(pageRankTarto);
 		
-		JButton valtoGomb = new JButton("Rendezés fontosság szerint");
+		valtoGomb = new JButton("Rendezés fontosság szerint");
 		valtoGomb.setAlignmentX(JButton.CENTER_ALIGNMENT);
 		valtoGomb.setFont(PageRankMain.APPFONT);
 		valtoGomb.addActionListener(new ActionListener() {
@@ -69,7 +71,6 @@ public class PageRankPanel extends JPanel {
 			}
 			
 		});
-		add(valtoGomb);
 		
 	}
 	
@@ -133,4 +134,9 @@ public class PageRankPanel extends JPanel {
 			return 0;
 		}
 	}
+
+	public JButton getValtoGomb() {
+		return valtoGomb;
+	}
+	
 }

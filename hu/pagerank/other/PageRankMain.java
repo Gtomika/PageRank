@@ -1,7 +1,6 @@
 package hu.pagerank.other;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
@@ -23,6 +22,7 @@ import javax.swing.JPanel;
 import hu.pagerank.gui.InputPanel;
 import hu.pagerank.gui.EredmenyPanel;
 import hu.pagerank.gui.MatrixPanel;
+import hu.pagerank.gui.MatrixScroller;
 
 public class PageRankMain {
 	
@@ -35,7 +35,8 @@ public class PageRankMain {
 	
 	public static final Font APPFONT = new Font("Arial",Font.PLAIN,20);
 	public static int logID;
-	public static final int MAXDISPLAYSIZE = 20;
+	public static final int MAXNOSCROLLSIZE = 20;
+	public static final int MAXDISPLAYSIZE = 150;
 	
 	public static JFrame frame;
 	private static Matrix pageRank;
@@ -104,13 +105,15 @@ public class PageRankMain {
 		//mátrix generálása
 		PageRankUtils.generateRandomGoogleMatrix(size); //PageRankUtils.googleMatrix-ba
 		
-		if(size<=MAXDISPLAYSIZE) {
-			MatrixPanel matrixPanel = new MatrixPanel(PageRankUtils.googleMatrix,false);
+		if(size<=MAXNOSCROLLSIZE) {
+			MatrixPanel matrixPanel = new MatrixPanel(PageRankUtils.googleMatrix);
 			mainPanel.add(matrixPanel,BorderLayout.CENTER);
+		} else if(size <= MAXDISPLAYSIZE) {
+			MatrixScroller ms = new MatrixScroller(PageRankUtils.googleMatrix);
+			mainPanel.add(ms, BorderLayout.CENTER);
 		} else {
-			JLabel infoLabel = new JLabel("<html><body>A mátrix túl nagy ahhoz hogy itt megjelenjen!<br> (de az output fájlba bekerül)</body></html>");
+			JLabel infoLabel = new JLabel("<html><body>A mátrix túl nagy ahhoz, hogy meg lehessen jeleníteni!<br>(több mint 150*150)</body></html>");
 			infoLabel.setFont(APPFONT);
-			infoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 			mainPanel.add(infoLabel,BorderLayout.CENTER);
 		}
 		
@@ -123,10 +126,14 @@ public class PageRankMain {
 		linkMatrixGomb.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(size<MAXDISPLAYSIZE) {
-					JOptionPane.showMessageDialog(frame, new MatrixPanel(PageRankUtils.linkMatrix,true), "A linkmátrix", JOptionPane.PLAIN_MESSAGE);
+				if(size<MAXNOSCROLLSIZE) {
+					JOptionPane.showMessageDialog(frame, new MatrixPanel(PageRankUtils.linkMatrix), "A linkmátrix", JOptionPane.PLAIN_MESSAGE);
+				} else if(size <= MAXDISPLAYSIZE) {
+					JOptionPane.showMessageDialog(frame, new MatrixScroller(PageRankUtils.linkMatrix), "A linkmátrix", JOptionPane.PLAIN_MESSAGE);
 				} else {
-					JOptionPane.showMessageDialog(frame, "Túl nagy ahhoz, hogy itt megjelenjen!", "A linkmátrix", JOptionPane.PLAIN_MESSAGE);
+					JLabel infoLabel = new JLabel("<html><body>A mátrix túl nagy ahhoz, hogy meg lehessen jeleníteni!<br>(több mint 150*150)</body></html>");
+					infoLabel.setFont(APPFONT);
+					JOptionPane.showMessageDialog(frame, infoLabel, "A linkmátrix", JOptionPane.PLAIN_MESSAGE);
 				}
 			}
 		});
@@ -136,10 +143,14 @@ public class PageRankMain {
 		sMatrixGomb.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(size<MAXDISPLAYSIZE) {
-					JOptionPane.showMessageDialog(frame, new MatrixPanel(PageRankUtils.sMatrix,false), "S mátrix", JOptionPane.PLAIN_MESSAGE);
+				if(size<MAXNOSCROLLSIZE) {
+					JOptionPane.showMessageDialog(frame, new MatrixPanel(PageRankUtils.sMatrix), "S mátrix", JOptionPane.PLAIN_MESSAGE);
+				} else if(size <= MAXDISPLAYSIZE) {
+					JOptionPane.showMessageDialog(frame, new MatrixScroller(PageRankUtils.sMatrix), "S mátrix", JOptionPane.PLAIN_MESSAGE);
 				} else {
-					JOptionPane.showMessageDialog(frame, "Túl nagy ahhoz, hogy itt megjelenjen!", "S mátrix", JOptionPane.PLAIN_MESSAGE);
+					JLabel infoLabel = new JLabel("<html><body>A mátrix túl nagy ahhoz, hogy meg lehessen jeleníteni!<br>(több mint 150*150)</body></html>");
+					infoLabel.setFont(APPFONT);
+					JOptionPane.showMessageDialog(frame, infoLabel, "S mátrix", JOptionPane.PLAIN_MESSAGE);
 				}
 			}
 		});

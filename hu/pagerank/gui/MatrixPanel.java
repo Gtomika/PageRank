@@ -1,7 +1,6 @@
 package hu.pagerank.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -31,7 +30,7 @@ public class MatrixPanel extends JPanel {
 	 * @param dimension a négyzetes mátrix dimenziója
 	 */
 	
-	public MatrixPanel(Matrix m, boolean isHighlighted) {
+	public MatrixPanel(Matrix m) {
 		super();
 		
 		setLayout(new BorderLayout());
@@ -52,7 +51,6 @@ public class MatrixPanel extends JPanel {
 				dataLabel.setFont(PageRankMain.APPFONT);
 				
 				if(m.data[i][j]==0) dataLabel.setText(0+"");
-				if(isHighlighted && m.data[i][j]!=0) dataLabel.setForeground(Color.RED);
 				
 				matrixContainer.add(dataLabel,gbc);
 				

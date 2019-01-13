@@ -1,0 +1,3 @@
+mostantól nincs fájlba írás de nagy mátrixokat is meg lehet jeleníteni.
+
+-max megjeleníthetõ méret: 150*150
