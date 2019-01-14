@@ -98,7 +98,7 @@ public class PageRankPanel extends JPanel {
 			
 			setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
 			
-			JLabel sorszamMutato = new JLabel(sa.sorszam + ".");
+			JLabel sorszamMutato = new JLabel(sa.sorszam + ". oldal");
 			sorszamMutato.setAlignmentX(JLabel.CENTER_ALIGNMENT);
 			add(sorszamMutato);
 			
